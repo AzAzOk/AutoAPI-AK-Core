@@ -1,0 +1,208 @@
+# ============================================================
+# AutoAPI-AK-Core — .gitignore
+# Go + Node.js monorepo
+# ============================================================
+
+
+# ============================================================
+# SECRETS & ENV — НИКОГДА не коммитить
+# ============================================================
+.env
+.env.*
+!.env.example
+!configs/**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cert
+secrets/
+vault/
+
+
+# ============================================================
+# GO
+# ============================================================
+# Бинарники
+bin/
+dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Go workspace (если не используете go.work намеренно)
+# go.work
+# go.work.sum
+
+# Vendor (если используете go mod, а не vendor)
+vendor/
+
+# Profiling
+*.prof
+*.pprof
+cpu.out
+mem.out
+
+
+# ============================================================
+# NODE.JS
+# ============================================================
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Cache
+.npm
+.pnpm-store
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Test
+jest-results/
+
+
+# ============================================================
+# DOCKER
+# ============================================================
+# Локальные docker override-файлы (если есть)
+docker-compose.override.yml
+docker-compose.local.yml
+.docker/
+
+
+# ============================================================
+# IDE & EDITORS
+# ============================================================
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains (GoLand, WebStorm, Rider)
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+.#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+
+# ============================================================
+# OS
+# ============================================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+
+# ============================================================
+# TOOLS
+# ============================================================
+# Air (Go live reload)
+tmp/
+.air.toml.local
+
+# golangci-lint cache
+.golangci-lint/
+
+# protoc generated (если генерируете в /gen, а не /api)
+# gen/
+
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/*.tfvars
+!infra/terraform/*.tfvars.example
+infra/terraform/.terraform.lock.hcl
+
+# Helm
+infra/k8s/**/*.lock.yaml
+
+# Buf (protobuf)
+.buf/
+
+
+# ============================================================
+# LOGS & TEMP
+# ============================================================
+*.log
+logs/
+tmp/
+temp/
+.tmp/
+
+
+# ============================================================
+# TESTING & COVERAGE
+# ============================================================
+.testcache/
+test-results/
+junit-results/
+*.junit.xml
+
+
+# ============================================================
+# MONITORING / TRACES (local dev dumps)
+# ============================================================
+traces/
+profiles/

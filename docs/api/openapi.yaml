@@ -1,0 +1,147 @@
+openapi: 3.1.0
+info:
+  title: AutoAPI-AK-Core
+  version: 0.1.0
+  description: Единый прокси-оркестратор для управления пулом AI-аккаунтов
+
+servers:
+  - url: http://localhost:3000
+    description: Local dev (через gateway)
+
+paths:
+  /v1/auth/register:
+    post:
+      summary: Регистрация
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, minLength: 8 }
+      responses:
+        '201': { description: Пользователь создан }
+        '409': { description: Email уже занят }
+
+  /v1/auth/login:
+    post:
+      summary: Вход
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        '200':
+          description: Токены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken: { type: string }
+                  refreshToken: { type: string }
+                  expiresIn: { type: integer }
+
+  /v1/accounts:
+    post:
+      summary: Добавить аккаунт провайдера
+      tags: [Accounts]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provider, apiKey]
+              properties:
+                provider:
+                  type: string
+                  enum: [openai, claude, gemini]
+                apiKey: { type: string }
+                limitPerDay: { type: integer, default: 0 }
+      responses:
+        '201': { description: Аккаунт добавлен }
+
+    get:
+      summary: Список аккаунтов пользователя
+      tags: [Accounts]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Статус аккаунтов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: string }
+                    provider: { type: string }
+                    remaining: { type: integer }
+                    resetsAt: { type: string, format: date-time }
+                    isActive: { type: boolean }
+
+  /v1/route:
+    post:
+      summary: Отправить запрос через роутер
+      tags: [Router]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provider, payload, sessionId]
+              properties:
+                provider: { type: string }
+                sessionId: { type: string }
+                payload:
+                  type: object
+                  description: Тело запроса к провайдеру (передаётся as-is)
+      responses:
+        '200': { description: Ответ от провайдера }
+        '429': { description: Все аккаунты исчерпаны }
+
+  /v1/sessions:
+    post:
+      summary: Создать сессию
+      tags: [Context]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provider]
+              properties:
+                provider: { type: string }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessionId: { type: string }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
